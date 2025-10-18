@@ -12,9 +12,14 @@ dns_query_spec = {
     "questions": [
         {
             "qname": "ilab1.cs.rutgers.edu",
-            "qtype": 1,   # Arecord
-            "qclass": 1   # IN
+            "qtype": 28,
+            "qclass": 1
         }
+        # {
+        #     "qname": "ilab1.cs.rutgers.edu",
+        #     "qtype": 1,   # Arecord
+        #     "qclass": 1   # IN
+        # }
     ]
 }
 
@@ -89,6 +94,41 @@ def parse_response(data):
 		 TODO  Add code to extract IPv4 address or IPv6 address based on atype and rdlength
 		 Answer should contain three fields "type","ip", and "ttl"
         '''
+        
+        '''
+         for ipv4: there are 4 bytes in 32 bits, ipv4 is 32 bits long the standard ip address is
+         each byte represented by one byte 
+
+
+        '''
+
+        answer_types = {
+            "A": {
+                "type": 0x0001, 
+                "length": 4
+            }, 
+            "AAAA": {
+                "type": 0x001c, 
+                "length": 16
+            }
+        }
+
+        if atype == answer_types["A"]["type"] and rdlength == answer_types["A"]["length"]:
+            bytes = [rdata[i] for i in range(rdlength)]
+            ip_address = ".".join(str(byte) for byte in bytes)
+            answers.append({"type": "A", "ip": ip_address, "ttl": ttl})
+        elif atype == answer_types["AAAA"]["type"] and rdlength == answer_types["AAAA"]["length"]:
+            segments = []
+            for i in range(0, rdlength, 2):
+                upper_byte = rdata[i] << 8 
+                lower_byte = rdata[i+1]
+                combined = upper_byte | lower_byte 
+
+                current_hex = f"{combined: 04x}"
+                segments.append(current_hex)
+            ip_address = ":".join(segments) 
+            answers.append({"type": "AAAA", "ip": ip_address, "ttl":ttl})
+          
     response["answers"] = answers
     return response
 
@@ -102,3 +142,36 @@ def dns_query(query_spec, server=("8.8.8.8", 53)):
     sock.close()
     result=parse_response(data)
     return result
+
+if __name__ == "__main__":
+    with open("Input.json", "r") as f:
+        query_json = json.load(f)
+    
+    #for each question object in input.json create query spec 
+    #append each response to output.txt
+    for q in query_json:
+        #creating query spec
+        dns_query_spec = {
+            "id": random.randint(0, 65535),
+            "qr": 0,      # query
+            "opcode": 0,  # standard query
+            "rd": 1,      # recursion desired
+            "questions": [
+                {
+                    "qname": q["qname"],
+                    "qtype": q["qtype"],
+                    "qclass": 1
+                }
+            ]
+        }
+
+        
+        response = dns_query(dns_query_spec)
+        print(json.dumps(response, indent = 2))
+
+        #clear output.txt file if there is any info in it because a will keep writing
+        with open("output.txt", "a") as f:
+            f.write(json.dumps(response) + "\n")
+
+
+
