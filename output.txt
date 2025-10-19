@@ -1,0 +1,4 @@
+{"id": 58137, "qr": 1, "opcode": 0, "aa": 0, "tc": 0, "rd": 1, "ra": 1, "rcode": 0, "qdcount": 1, "ancount": 1, "answers": [{"type": "A", "ip": "128.6.13.2", "ttl": 3600}]}
+{"id": 38885, "qr": 1, "opcode": 0, "aa": 0, "tc": 0, "rd": 1, "ra": 1, "rcode": 0, "qdcount": 1, "ancount": 1, "answers": [{"type": "AAAA", "ip": " 2620: 000: d60: ac0d: 000: 000: 000: 002", "ttl": 3600}]}
+{"id": 7824, "qr": 1, "opcode": 0, "aa": 0, "tc": 0, "rd": 1, "ra": 1, "rcode": 0, "qdcount": 1, "ancount": 0, "answers": []}
+{"id": 52055, "qr": 1, "opcode": 0, "aa": 0, "tc": 0, "rd": 1, "ra": 1, "rcode": 0, "qdcount": 1, "ancount": 3, "answers": [{"type": "A", "ip": "104.18.4.101", "ttl": 300}, {"type": "A", "ip": "104.18.5.101", "ttl": 300}]}

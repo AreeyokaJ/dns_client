@@ -167,6 +167,11 @@ if __name__ == "__main__":
 
         
         response = dns_query(dns_query_spec)
+
+        if response["tc"] == 1: 
+            print("Error, response was truncated")   
+            sys.exit()
+
         print(json.dumps(response, indent = 2))
 
         #clear output.txt file if there is any info in it because a will keep writing
