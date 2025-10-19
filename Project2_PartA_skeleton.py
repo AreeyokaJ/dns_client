@@ -171,6 +171,9 @@ if __name__ == "__main__":
         if response["tc"] == 1: 
             print("Error, response was truncated")   
             sys.exit()
+        
+        if response["RA"] == 0:
+            print("Error, server does not support recursion")
 
         print(json.dumps(response, indent = 2))
 
