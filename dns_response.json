@@ -1,0 +1,32 @@
+{
+  "id": 12968,
+  "qr": 1,
+  "opcode": 0,
+  "aa": 0,
+  "tc": 0,
+  "rd": 1,
+  "ra": 1,
+  "rcode": 0,
+  "qdcount": 1,
+  "ancount": 2,
+  "nscount": 0,
+  "arcount": 0,
+  "answers": [
+    {
+      "hostname": "cs.rutgers.edu",
+      "ttl": 3600,
+      "atype": 2,
+      "rtype": "NS",
+      "ip": null,
+      "nsname": "ns1.rutgers.edu"
+    },
+    {
+      "hostname": "cs.rutgers.edu",
+      "ttl": 3600,
+      "atype": 2,
+      "rtype": "NS",
+      "ip": null,
+      "nsname": "runs2.rutgers.edu"
+    }
+  ]
+}

@@ -11,7 +11,7 @@ dns_query_spec = {
     "rd": 1,      # recursion desired
     "questions": [
         {
-            "qname": "soak.princeton.edu",
+            "qname": "cs.rutgers.edu",
             "qtype": 2,   # NS record
             "qclass": 1   # IN
         }
@@ -80,13 +80,66 @@ def parse_rr(data, offset):
     rdata = data[offset:offset+rdlength]
     offset += rdlength
     record={}
+    
+
     ##########
     ##  Your code here to create a record given data 
     ## record fields shoud include  hostname, ttl, atype, rtype, ip, nsname
     #################
 
-    return record,offset
+    answer_types = {
+            "A": {
+                "type": 0x0001,
+                "length": 4
+            },
+            "AAAA": {
+                "type": 0x001c,
+                "length": 16
+            },
+            "NS": {
+                "type": 0x0002,
+                "length": None
+            }
+        }
+    record = {
+        "hostname": name,
+        "ttl": ttl,
+        "atype": atype,
+        "rtype": None,
+        "ip": None,
+        "nsname": None
+    }
 
+    if atype == answer_types["A"]["type"] and rdlength == answer_types["A"]["length"]:
+        bytes = [rdata[i] for i in range(rdlength)]
+        ip_address = ".".join(str(byte) for byte in bytes)
+        record["rtype"] = "A"
+        record["ip"] = ip_address
+    elif atype == answer_types["AAAA"]["type"] and rdlength == answer_types["AAAA"]["length"]:
+        segments = []
+        for i in range(0, rdlength, 2): # 128 bits = 16 bytes = 8 groups of 2 bytes each 
+            upper_byte = (rdata[i] << 8)
+            lower_byte = rdata[i+1]
+            combined_two_bytes = upper_byte | lower_byte
+
+            combined_two_bytes_to_four_digit_hex = f"{combined_two_bytes:04x}"
+            segments.append(combined_two_bytes_to_four_digit_hex)
+        ip_address = ":".join(segments)
+        record["rtype"] = "AAAA"
+        record["ip"] = ip_address
+    
+    
+    elif atype == answer_types["NS"]["type"]:
+        record["rtype"] = "NS"
+        nsname, _ = parse_name(data, offset - rdlength)
+        record["nsname"] = nsname
+
+
+
+    else:
+        raise ValueError(f"Unsupported record type: {atype}. Only A, AAAA, and NS records are supported for this project.")
+    
+    return record, offset
 
 def parse_response(data):
     response = {}
